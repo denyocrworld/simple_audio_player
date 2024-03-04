@@ -33,21 +33,29 @@ class AudioService {
     return await rxPrefs.getInt("duration") ?? 0;
   }
 
-  startBackgroundListener() async {
+  static cleanAction() {
+    rxPrefs.remove("action");
+  }
+
+  static startBackgroundListener() async {
     rxPrefs = RxSharedPreferences(await SharedPreferences.getInstance());
     rxPrefs.getStringStream("action").listen((action) async {
       String? url = await rxPrefs.getString("url");
       if (url == null) return;
       if (action == "play") {
+        cleanAction();
         await player.play(UrlSource(url));
         player.onDurationChanged.listen((event) {
           rxPrefs.setInt("duration", event.inSeconds);
         });
       } else if (action == "stop") {
+        cleanAction();
         await player.stop();
       } else if (action == "pause") {
+        cleanAction();
         await player.pause();
       } else if (action == "resume  ") {
+        cleanAction();
         await player.resume();
       }
     });

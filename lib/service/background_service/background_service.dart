@@ -1,20 +1,12 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:simple_audio_player/service/audio_service/audio_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
-  Timer.periodic(const Duration(seconds: 1), (timer) async {
-    final value = Random().nextInt(1000).toString();
-    print('Background service timer is working... $value');
-    final path = await getTemporaryDirectory();
-    final file = File('${path.path}/data.txt');
-    file.writeAsStringSync(value);
-  });
+  AudioService.startBackgroundListener();
 }
 
 @pragma('vm:entry-point')
